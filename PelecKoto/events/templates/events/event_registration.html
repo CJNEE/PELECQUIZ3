@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Event Registration</title>
+  <style>
+    :root {
+      --bg1: #0b1220;
+      --bg2: #111b33;
+      --card: rgba(255, 255, 255, 0.08);
+      --cardBorder: rgba(255, 255, 255, 0.18);
+      --text: rgba(255, 255, 255, 0.92);
+      --muted: rgba(255, 255, 255, 0.7);
+      --accent: #7c5cff;
+      --accent2: #22d3ee;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color: var(--text);
+      background:
+        radial-gradient(1200px 600px at 20% 10%, rgba(124, 92, 255, 0.35), transparent 55%),
+        radial-gradient(900px 500px at 80% 20%, rgba(34, 211, 238, 0.28), transparent 60%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+    }
+
+    .wrap { width: 100%; max-width: 520px; }
+
+    .glass {
+      background: var(--card);
+      border: 1px solid var(--cardBorder);
+      box-shadow:
+        0 20px 70px rgba(0,0,0,0.35),
+        inset 0 1px 0 rgba(255,255,255,0.08);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-radius: 18px;
+      padding: 22px;
+    }
+
+    h1 {
+      margin: 0 0 6px 0;
+      font-size: 1.5rem;
+      letter-spacing: 0.2px;
+    }
+
+    .subtitle {
+      margin: 0 0 18px 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .errorlist {
+      margin: 0 0 14px 0;
+      padding-left: 18px;
+      color: #ffd1d1;
+    }
+
+    label {
+      display: block;
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin: 12px 0 6px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.2);
+      outline: none;
+      background: rgba(0,0,0,0.18);
+      color: var(--text);
+    }
+
+    input:focus {
+      border-color: rgba(124, 92, 255, 0.7);
+      box-shadow: 0 0 0 4px rgba(124, 92, 255, 0.18);
+    }
+
+    .help {
+      margin-top: 6px;
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.6);
+    }
+
+    .btn {
+      margin-top: 18px;
+      width: 100%;
+      border: none;
+      padding: 12px 14px;
+      border-radius: 12px;
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      box-shadow: 0 12px 30px rgba(124, 92, 255, 0.25);
+      transition: transform 0.05s ease, filter 0.15s ease;
+    }
+
+    .btn:hover { filter: brightness(1.05); }
+    .btn:active { transform: translateY(1px); }
+
+    .field-error {
+      margin-top: 6px;
+      color: #ffd1d1;
+      font-size: 0.9rem;
+    }
+
+    /* Make Django's default errors render neatly */
+    ul.errorlist { list-style: disc; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="glass">
+      <h1>Event Registration</h1>
+      <p class="subtitle">Securely register for the event by filling out the form below.</p>
+
+      <form method="post">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+          <ul class="errorlist">
+            {% for err in form.non_field_errors %}
+              <li>{{ err }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+
+        {{ form.non_field_errors }}
+
+        {% for field in form.visible_fields %}
+          <label for="id_{{ field.name }}">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}
+            <div class="field-error">{{ field.errors|striptags }}</div>
+          {% endif %}
+        {% endfor %}
+
+        <button class="btn" type="submit">Register</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
+
+
