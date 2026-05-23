@@ -1,1 +1,0 @@
-"# BastaQuiZ2KotoPelecnaman" 
